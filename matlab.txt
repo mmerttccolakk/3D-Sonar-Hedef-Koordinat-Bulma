@@ -1,0 +1,36 @@
+clc;
+clear all;
+
+delete(instrfindall);
+baglanti = serial ('COM4','BaudRate',9600); %buradan COM portunu değiştirmelisiniz
+
+fopen(baglanti);
+
+while(1)
+data = fscanf(baglanti);
+[y, xd] = strtok(data);
+[x, d] = strtok(xd);
+
+ya = real(str2num(y));
+xa = real(str2num(x));
+da = real(str2num(d));
+
+ya=ya-90;
+
+[z,xz]=sincos(ya,da);
+[x,y]=sincos(xa,xz);
+
+yf = round(y);
+xf = round(x);
+zf = round(z);
+
+disp(yf);
+disp(xf);
+disp(zf);
+
+scatter3(xf,yf,zf,'filled')
+hold on
+drawnow;
+
+end
+fclose(baglanti);

@@ -1,0 +1,58 @@
+#include <Servo.h>
+#include <Ultrasonic.h>
+
+Ultrasonic ultrasonic(12, 13); //trig_echo
+Servo servo_x,servo_y;
+int mesafe,pos_x,pos_y,hiz=1,sonic=1,pos_x_s=0,pos_x_f=180,pos_y_s=0,pos_y_f=180;//baslangıc ve bitis arasındaki fark cift olmalı
+
+void setup() {
+ Serial.begin(9600);
+ servo_y.attach(8);servo_x.attach(9);
+}
+void loop() {
+ for (pos_y = pos_y_s; pos_y <= pos_y_f; pos_y += 1) {
+ servo_y.write(pos_y);
+ delay(hiz);
+ for (pos_x = pos_x_s; pos_x <= pos_x_f; pos_x += 1) {
+ servo_x.write(pos_x);
+ delay(hiz);
+ mesafe=ultrasonic.distanceRead();
+ if(mesafe>=200){mesafe=200;}
+ Serial.print(pos_y);Serial.print(" ");Serial.print(pos_x);Serial.print(" ");Serial.print(mesafe);Serial.print("\n");
+ delay(sonic);
+ }
+ pos_y++;
+ servo_y.write(pos_y);
+ delay(hiz);
+ for (pos_x = pos_x_f; pos_x>= pos_x_s; pos_x -= 1) {
+ servo_x.write(pos_x);
+ delay(hiz);
+ mesafe=ultrasonic.distanceRead();
+ Serial.print(pos_y);Serial.print(" ");Serial.print(pos_x);Serial.print(" ");Serial.print(mesafe);Serial.print("\n");
+ delay(sonic);
+ }
+ }
+ pos_x++;
+ for (pos_y = pos_y_f; pos_y>= pos_y_s; pos_y -= 1) {
+ servo_y.write(pos_y);
+ delay(hiz);
+ for (pos_x = pos_x_s; pos_x <= pos_x_f; pos_x += 1) {
+ servo_x.write(pos_x);
+ delay(hiz);
+ mesafe=ultrasonic.distanceRead();
+ if(mesafe>=200){mesafe=200;}
+ Serial.print(pos_y);Serial.print(" ");Serial.print(pos_x);Serial.print(" ");Serial.print(mesafe);Serial.print("\n");
+ delay(sonic);
+ }
+ pos_y--;
+ servo_y.write(pos_y);
+ delay(hiz);
+ for (pos_x = pos_x_f; pos_x>= pos_x_s; pos_x -= 1) {
+ servo_x.write(pos_x);
+ delay(hiz);
+ mesafe=ultrasonic.distanceRead();
+ Serial.print(pos_y);Serial.print(" ");Serial.print(pos_x);Serial.print(" ");Serial.print(mesafe);Serial.print("\n");
+ delay(sonic);
+ }
+ }
+}
